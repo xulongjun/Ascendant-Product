@@ -1,26 +1,33 @@
-# Ascendant-Product
+# Ascendant — Product
 
-> Status: Planning approved; implementation not started. Date: 2026-10-20.
+Product requirements and delivery governance for **Ascendant**, an original RPG-inspired career portfolio. The product showcases the owner's real Senior .NET / Azure / DevOps career; it must never misrepresent the role as "Architect".
 
-An original RPG-inspired interactive professional CV for a **Senior .NET / Azure Developer and DevOps Engineer**. **Not** an architect title, and not a clone of any existing game.
+## Two repositories (source of truth)
+- **[Ascendant-Product](https://github.com/xulongjun/Ascendant-Product)** (this repository): Product charter, roadmap, Features F01–F06, PBIs 001–010, ADRs and PO acceptance.
+- **[Ascendant](https://github.com/xulongjun/Ascendant)**: Application source, Terraform, GitHub Actions, operational instructions and releases.
 
-## Current instruction
-**Phase 1 = documentation and project governance only.** Do not create infrastructure, GitHub repo, pipelines, application code, UI or assets in this phase.
+Both repositories already exist (public, `main`). **Do not recreate them or assume they are private.** Never nest Git repositories. Windows workspace parent: `D:\source\Cleancode_Consulting\Useless-Product`.
 
-- Product spec: `docs/PRODUCT.md`
-- Architecture: `docs/ARCHITECTURE.md`
-- Scope and roadmap: `docs/ROADMAP.md`
-- Features: `docs/features/`
-- PBIs: `docs/pbi/`
-- Decisions: `docs/DECISIONS.md`
-- Workflow: `docs/WORKFLOW.md`
-- Cursor handoff: `CURSOR_PHASE1_INSTRUCTIONS.md`
+## Delivery sequence
+1. M0 — Publish and verify product docs + two-repo governance.
+2. M1 — PBI-001/002 foundation → PBI-004 secure Terraform bootstrap/OIDC → PBI-003 Azure Static Web Apps infrastructure → PBI-005/006 CI/CD → PBI-007 public HTTPS smoke test.
+3. M2 — RPG CV content/interaction.
+4. M3 — Original artwork/visuals.
 
-## Target location
-`D:\source\Cleancode_Consulting\Useless-Product\Ascendant-Product`
+**Production only.** No Azure staging, test or preview environment. Automated validation, PR review, and post-deploy production smoke testing remain mandatory.
 
-## Deployment target (planned, not provisioned)
-Azure Static Web Apps Free, production only, GitHub Actions, Terraform (remote state), GitHub OIDC for Azure infrastructure workflows.
+## Read first
+- [Product charter](docs/PRODUCT.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Decision log](docs/DECISIONS.md)
+- [Workflow](docs/WORKFLOW.md)
+- [Security rules](docs/SECURITY.md)
+- [Azure prerequisites](docs/AZURE_PREREQUISITES.md)
+- [Features](docs/features/) and [PBIs](docs/pbi/)
+- [AI agent rules](AGENTS.md)
 
-## GitHub publication
-Target repository: `xulongjun/Ascendant-Product` (private initially). On your Windows computer, from this folder, run `./PUBLISH_GITHUB.ps1` in PowerShell (requires `git` and GitHub CLI `gh`, authenticated). Inspect the script before running.
+## Data protection
+Source control is PUBLIC: no tokens, passwords, Azure credentials, Terraform state, home address, contact details, personal documents or private work/financial records. GitHub Actions **Secrets** hold sensitive deployment material; GitHub Actions **Variables** hold non-secret configuration such as subscription/tenant IDs (may be secrets too if desired). Prefer GitHub OIDC rather than Azure client secrets. Only intentionally approved public profile information belongs in the final website.
+
+**Status:** Product docs are being corrected on a PR. No Azure resources, CI/CD or application have been provisioned by this documentation change.

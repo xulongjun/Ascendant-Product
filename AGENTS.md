@@ -1,14 +1,14 @@
-# AI Agent Rules — Ascendant-Product
+# AI Agent Instructions — Ascendant-Product
 
-Read `README.md`, `docs/WORKFLOW.md`, `docs/DECISIONS.md`, and the active PBI before acting.
+You are assisting the human Product Owner (PO). This repository is for documentation and product backlog only. **Do not add executable source code, Terraform or workflows here.**
 
-1. Respect PO authority; never infer permission to provision Azure, create public repos, merge, or spend.
-2. Current instruction is Phase 1: **documentation only**.
-3. Do not create `src/`, `infra/terraform/`, `.github/workflows/`, game UI, placeholder app, CI, or cloud resources in Phase 1.
-4. Do not reuse ConvictionOS code or its financial data; copy discipline, not implementation.
-5. All implementation is tied to one explicit PBI, with validation and documentation updates.
-6. No secrets, state files, deployment keys or personal addresses in git.
-7. Do not claim an action is complete without evidence.
-8. Role must not be labeled architect; do not invent credentials or employment history.
-9. No visual cloning of existing games; original art direction later.
-10. If a pre-existing target file has conflicting content, show diff and request PO decision instead of overwriting.
+1. Read `README.md`, `docs/WORKFLOW.md`, `docs/DECISIONS.md`, `docs/SECURITY.md` and the currently approved PBI before work.
+2. Product source of truth: `xulongjun/Ascendant-Product`. Implementation source: `xulongjun/Ascendant`. Both already exist. Never re-create or rename either repo.
+3. The PO sets scope; implement only an explicitly authorized PBI. Draft PRs and reports are allowed for scoped documentation maintenance.
+4. User authorization to work with GitHub directly applies to documentation changes; **do not infer Azure spend, provisioning, destructive operations, secret changes or production deployment authorization**.
+5. Do not copy ConvictionOS code, financial data or proprietary records. Mirror its Feature → PBI → Task → PR → review discipline only.
+6. No credentials, tokens, personal identifying data, addresses, local .env, Terraform state, work history details not explicitly approved for publication, or paid-account metadata in git.
+7. Track evidence and acceptance in PBI/PR. Never report unverified deployment as completed.
+8. Correct career title: Senior .NET / Azure / DevOps Engineer. Never claim Architect.
+9. No game UI or art before infrastructure-first milestone is complete; future design must be original.
+10. When modifying existing files, inspect them and use PR changes; do not force push or silently overwrite unexpected work.
