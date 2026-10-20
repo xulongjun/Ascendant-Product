@@ -1,34 +1,38 @@
-# Roadmap and Backlog
+# Roadmap — Ascendant
 
-## Milestone M0 — Product Management (NOW, documentation only)
-Deliver project charter, architecture, decisions, feature/PBI backlog, governance and Cursor instructions. **No code, no infrastructure deployment**.
+## M0: Product foundation — active
+- Publish reviewed documentation directly in `xulongjun/Ascendant-Product`.
+- Align Product and Code repo responsibilities and security rules.
+- No Azure or app code as part of this deliverable.
 
-## Milestone M1 — Production Delivery Foundation (execute only after M0 approval)
-PBI-001 through PBI-007, in dependency order. End state: live production placeholder deployed automatically from protected main. This placeholder is **not a prototype environment**.
+## M1: Infrastructure-first production delivery — planned
+Order: **PBI-001 → PBI-002 → PBI-004 → PBI-003 → PBI-005 → PBI-006 → PBI-007**.
+- First secure the existing GitHub repositories.
+- Configure Terraform backend and Azure OIDC with approved subscription and least privilege.
+- Provision only approved Azure Static Web Apps production resources.
+- Build/test/validate in GitHub Actions and deploy real production placeholder.
+- Verify HTTPS URL, incremental redeploy and rollback.
 
-## Milestone M2 — Game CV Content / Experience
-PBI-008 and PBI-009, planned only. Establish real professional story, data model, navigation, interaction.
+## M2: RPG CV requirements and experience — deferred
+- PBI-008 character/stat/career data and privacy review
+- PBI-009 navigation, interactivity and accessibility
 
-## Milestone M3 — Original Visual Identity
-PBI-010, planned only. Concept art direction, portrait treatment, polished visual assets.
+## M3: Original visual language — deferred
+- PBI-010 visual/art direction, personal portrait approach (only after M1)
 
-## Dependency order
-001 -> 002 -> 004 (bootstrap/identity) -> 003 (Terraform app) -> 005 -> 006 -> 007 -> 008 -> 009 -> 010.
-PBI-004 must be complete before any authenticated Terraform apply. M1 infrastructure changes require user approval.
-
-## Feature / PBI index
-| Feature | PBI | Priority | Milestone |
+## Backlog table
+| Feature | PBI | Title | Priority |
 |---|---|---|---|
-| F01 Project Foundation | 001 Git repository and project baseline | P0 | M1 |
-| F01 Project Foundation | 002 Governance and backlog operations | P0 | M1 |
-| F02 Azure Infrastructure | 003 Terraform app infrastructure | P0 | M1 |
-| F02 Azure Infrastructure | 004 Remote state, bootstrap and identity | P0 | M1 |
-| F03 CI/CD | 005 Pull-request CI | P0 | M1 |
-| F03 CI/CD | 006 Production CD | P0 | M1 |
-| F04 Production Readiness | 007 First live deployment and smoke test | P0 | M1 |
-| F05 RPG CV Content | 008 Character/skill/career content model | P1 | M2 |
-| F05 RPG CV UX | 009 RPG navigation and interaction requirements | P1 | M2 |
-| F06 Art Direction | 010 Original visual direction | P2 | M3 |
+| F01 | PBI-001 | Existing GitHub baseline / dual repo | P0 |
+| F01 | PBI-002 | Governance and backlog | P0 |
+| F02 | PBI-003 | Terraform production Static Web Apps | P0 |
+| F02 | PBI-004 | Remote state bootstrap + Azure OIDC | P0 |
+| F03 | PBI-005 | GitHub Actions CI | P0 |
+| F03 | PBI-006 | GitHub Actions production CD | P0 |
+| F04 | PBI-007 | Real deployment & smoke checks | P0 |
+| F05 | PBI-008 | Character/skill/career content model | P1 |
+| F05 | PBI-009 | RPG UX requirements | P1 |
+| F06 | PBI-010 | Original art direction | P2 |
 
-## Current status
-M0 documents drafted. Every implementation PBI remains `Ready / Not Started` pending approval; no claims of infra or CI completion.
+## Blocking dependencies
+Azure subscription and approval for RBAC/provisioning/spend are required before PBI-004 execution. No visual design before initial infra pipeline and HTTPS validation.
