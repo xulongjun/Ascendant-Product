@@ -1,31 +1,28 @@
-# Product Owner / AI Development Workflow
+# PO → GitHub → Cursor delivery workflow
 
-## Roles
-- Owner acts as PO, accepts scope and PBI outcomes, approves costs and external changes.
-- Cursor acts as implementing developer, not autonomous PO.
-- GitHub PR + Actions provide change history and verification.
+## Roles and repo boundaries
+- **PO:** decides product scope, approves PBI, accepts delivery and cloud costs.
+- **Assistant:** edits GitHub product documents, creates scoped PRs, performs repo checks, produces review evidence.
+- **Cursor:** implements approved PBIs in `xulongjun/Ascendant`; does not invent scope.
+- **Ascendant-Product:** requirements and decision log. **Ascendant:** Terraform, pipelines and application.
 
-## Change lifecycle
-1. PO selects one PBI; examine Feature, dependencies, acceptance criteria and ADRs.
-2. Mark PBI `In Progress` and note branch name `feature/pbi-NNN-...`.
-3. Cursor creates minimal changes for that PBI only.
-4. Local review, checks and diff; document test evidence.
-5. Open PR, green CI, human review, merge into protected `main`.
-6. Record actual result, links, deviations and state `Done` only after acceptance.
-7. Production release only per deployment policy; verify smoke check.
-
-## Every PBI must contain
-ID, Feature, goal, value, scope, out of scope, dependencies, acceptance criteria, technical tasks, validation, rollback/recovery (when needed), status and evidence.
+## Per-PBI lifecycle
+1. Define goal, scope, out-of-scope, dependencies, acceptance criteria and risks in Product repo.
+2. PO approves PBI; open related GitHub issue/PR as appropriate.
+3. Branch naming: `feature/pbi-003-terraform-swa`, `docs/pbi-002-governance`.
+4. Implement only approved tasks on a branch; document checks and evidence in PR.
+5. Review automated CI and changes, then merge to protected `main`.
+6. Validate production deployment when applicable; PO accepts; record outcome and evidence.
+7. Update PBI/roadmap state; avoid claims of completion without evidence.
 
 ## Definition of Ready
-Scope/AC defined; prerequisites identified; no unresolved security/cost-critical decisions; dependencies agreed.
+AC defined, constraints and dependencies known, security/cost decisions resolved or explicitly blocked.
 
 ## Definition of Done
-Acceptance criteria demonstrably met; docs updated; no secrets; automated checks pass; PO accepts; deployment proof required when PBI calls for live deployment.
+AC verified with links/logs, no secrets, checks green, docs updated, PR reviewed and PO accepted. For deployment PBIs, public production HTTPS check required.
 
-## Branch and commit conventions
-`feature/pbi-003-terraform-swa`, `docs/pbi-002-governance`; conventional commits encouraged.
-No commit directly to main once branch protection is configured.
+## Current authority
+The PO has authorized direct GitHub **documentation** updates. This does not itself authorize Azure provisioning, subscriptions/RBAC changes, Terraform apply/destroy, setting secrets or automatic merging. GitHub repositories already exist; do not create them again.
 
-## Phase guard
-For the current handoff, **only produce and check documentation**. Do not create GitHub repository, Terraform files or Actions workflows, run `az` commands, provision resources, or build graphics unless a separate implementation PBI is approved.
+## Safe handling of user-specific profile data
+No sensitive personal information in Product repo. The final portfolio needs deliberate PO review of which professional profile details are public; runtime browser code never receives a GitHub Secret simply because that value is stored in Actions.
