@@ -1,44 +1,50 @@
-# Technical Architecture — Target
+# Architecture — Ascendant
 
-## Topology
-GitHub repository -> PR CI (lint/build/check) -> merge main -> GitHub Actions CD -> Azure Static Web Apps **production** -> public HTTPS.
+## Repository boundaries
+| Repo | Source of truth | Must contain |
+|---|---|---|
+| `xulongjun/Ascendant-Product` | PO | Charter, Features, PBIs, roadmap, decisions, security policy, acceptance |
+| `xulongjun/Ascendant` | Engineering | `infra/terraform/`, `.github/workflows/`, web app source, runbooks |
 
-Separate Infrastructure workflow: GitHub Actions -> Azure via OIDC federation -> Terraform with remote Azure Blob state -> resource group + Azure Static Web App (Free).
+Repositories exist already; both are currently public with `main` as default branch.
 
-## Decisions
-- Azure Static Web Apps `Free` tier, single production environment; `preview_environments_enabled = false` when supported by pinned provider.
-- No API, database, App Service plan, CDN, Key Vault, custom domain, or paid observability initially.
-- Terraform under `infra/terraform/`; separate bootstrap process provisions state storage and identity prerequisites. No committing any `.tfstate`, secrets or credentials.
-- Terraform provider and GitHub Actions versions are pinned and reviewed at implementation time, not guessed now.
-- GitHub Actions handles CI/CD; GitHub CLI may be used for repo administration after explicit authentication and approval.
-- Prefer OIDC instead of long-lived service principal secrets for Terraform Azure authorization.
-- Scope federated credential to the chosen GitHub repository/approved workflow/environment; GitHub changed default OIDC sub format for repos created after 2026-07-15, so **verify actual claims before creating trust**.
-- SWA site deployment authorization is separate from Azure infrastructure OIDC: phase-2 implementation must choose and document a supported deployment method (e.g. SWA deployment token in GitHub Actions secret, with rotation, never in git) and avoid assuming ARM login grants SWA upload rights.
-- Backend and frontend framework are deliberately *not selected* in Phase 1; a future ADR will pick it based on the chosen UI.
+## Target delivery
+```text
+PR in Ascendant -> GitHub Actions CI (format, build, security)
+    -> reviewed main merge -> GitHub Actions production deploy
+    -> Azure Static Web Apps Free -> public HTTPS -> smoke test
 
-## Naming draft — confirm before provisioning
-- GitHub repo: `ascendant-product` (private initially, can make public after review).
-- Azure resource group: `rg-ascendant-product-prd`.
-- Azure Static Web App: `swa-ascendant-product-prd-<unique-suffix>`.
-- State storage: dedicated bootstrap resource group/storage account/container with globally unique names.
-- Preferred region: West Europe if Azure Free tier offers capacity at deployment time; fallback subject to approval.
-- Tags: `project=ascendant-product`, `environment=prod`, `managed-by=terraform`.
+Separate infrastructure pipeline:
+GitHub Actions -> Azure Entra ID OIDC -> Terraform
+    -> remote Azure Blob state -> Azure RG + Static Web App
+```
 
-## Security / blast radius
-- Run Terraform plan on PR, apply only on protected main via approved workflow; require explicit approval for destroy.
-- Principle of least privilege, protected branch, scoped Actions permissions.
-- No production secrets in workflow output, application bundle, tracked files, or Terraform outputs.
-- Azure pricing and Free eligibility must be checked before apply; no cost guarantee if additional resources, quotas or network charges are introduced.
+No separate staging, preview or test environments. Build/unit/security checks may execute in GitHub Actions; the final smoke test is on the real production URL.
 
-## Definition of production smoke test (planned phase 2)
-- Successful GitHub Actions run on main.
-- Published URL responds over HTTPS; expected title/content present.
-- Fresh deployment visibly updates site.
-- No leaked credentials or production state in repository.
-- Document rollback path and validate redeploy of prior known-good commit.
+## Infra and secret separation
+- Terraform config and workflow YAML belong only in `Ascendant`; remote state belongs in an access-controlled Azure Storage Account, never in Git.
+- State-storage and workload identity bootstrap should be scripted/idempotent. Backend must use authenticated Azure identity, state locking and least privilege; never output secrets or state content.
+- Azure OIDC for Terraform authenticates to ARM. Static Web Apps content upload authorization is a **different channel**; document and scope its deploy token or another Microsoft-supported mechanism in a GitHub Secret.
+- Non-secret values (region, static app name, subscription ID, tenant ID, client ID) may be stored in GitHub repository/environment **Variables**. Sensitive values and credentials must go into **Secrets**. User may choose to treat identifiers as secrets too.
+- Use scoped GitHub permissions, protected `main`, PR CI, pinned provider/action versions and production-environment controls where supported. Verify federated OIDC claims emitted by the current repository/branch/environment before configuring Azure trust.
+- GitHub public repository: never commit `.env`, private professional/personal details, keys, `terraform.tfstate*`, `.terraform/`, tfvars with identifiers/secrets or credential exports.
 
-## Documentation references
-- Terraform Azure SWA: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/static_web_app
-- Microsoft SWA build: https://learn.microsoft.com/azure/static-web-apps/build-configuration
-- Microsoft SWA deployment tokens: https://learn.microsoft.com/azure/static-web-apps/deployment-token-management
-- GitHub OIDC Azure: https://docs.github.com/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-azure
+## Initial resource scope — pending PO approval
+- One resource group, one Azure Static Web App Free (when available for chosen subscription/region), bootstrap storage for Terraform state, minimum RBAC and federated identity.
+- Preferred deployment geography: West Europe, subject to provider-supported SWA location and region capacity verification.
+- Draft naming: `rg-ascendant-prd`, `swa-ascendant-prd-<suffix>`; state storage names must be globally unique.
+- No API, SQL, VM, App Service Plan, custom domain, paid monitoring, Key Vault or extra environments in initial scope.
+- Deployment and resource creation are blocked until PO provides authorized Azure scope and approves costs.
+
+## Exit criteria of M1
+1. Terraform validate/plan checks pass, reviewed apply succeeds and resources are visible in approved subscription.
+2. GitHub PR CI succeeds; merge to protected `main` triggers production deployment.
+3. Static Web Apps HTTPS endpoint responds with the intended minimal non-RPG placeholder.
+4. A small content change redeploys; rollback procedure documented and verified.
+5. Logs and repository contain no credential or sensitive data.
+
+## References
+- https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/static_web_app
+- https://learn.microsoft.com/azure/static-web-apps/build-configuration
+- https://learn.microsoft.com/azure/static-web-apps/deployment-token-management
+- https://docs.github.com/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-azure
