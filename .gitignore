@@ -1,0 +1,13 @@
+# Terraform/local secrets (reserved for future approved implementation)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.vscode/
+.idea/
