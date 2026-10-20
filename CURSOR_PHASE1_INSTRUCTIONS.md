@@ -1,22 +1,18 @@
-# Cursor handoff — Ascendant M0/M1
+# Cursor handoff — Ascendant
 
-## Local layout (if cloning locally; no ZIP needed)
+GitHub is the source of truth. Clone or pull directly; **no ZIP and no repository creation**.
+
 ```text
 D:\source\Cleancode_Consulting\Useless-Product\
-  Ascendant-Product\  (clone github.com/xulongjun/Ascendant-Product)
-  Ascendant\          (clone github.com/xulongjun/Ascendant)
+  Ascendant-Product\  (Product requirements)
+  Ascendant\          (Application/infra)
 ```
 
-The GitHub repositories ALREADY EXIST. Do not call `gh repo create`, do not nest repositories and do not use old publish scripts.
+Read `Ascendant-Product/AGENTS.md`, `docs/WORKFLOW.md`, `docs/ARCHITECTURE.md`, `docs/SECURITY.md`, `docs/AZURE_PREREQUISITES.md`, and the approved Feature/PBI.
 
-## Read before starting
-From `Ascendant-Product`: `AGENTS.md`, `docs/PRODUCT.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, `docs/WORKFLOW.md`, `docs/SECURITY.md`, `docs/AZURE_PREREQUISITES.md`, the selected Feature and PBI.
+**Git workflow:** commits directly to `main`; no branches or PRs unless PO explicitly changes this rule. Verify changes and tests before each push; do not overwrite unrelated content.
 
-## Next implementation plan (DO NOT auto-execute)
-- PBI-001: inspect code repository; prepare minimal repo baseline and `.gitignore`; PR review.
-- PBI-002: ensure backlog and security governance complete.
-- PBI-004: propose secure Azure backend bootstrap and Azure OIDC identity setup after PO supplies Azure permission/scope.
-- PBI-003: Terraform Azure SWA Free in a single production environment.
-- PBI-005/006/007: CI, deploy, public smoke-test and rollback.
+Next: verify PBI-001/002 foundation, then plan PBI-004 remote Terraform state and Azure OIDC. Do not run Terraform apply, create cloud resources, change RBAC/secrets or incur spending without PO authorization. Do not implement RPG UI or visuals yet.
 
-**Current scope:** documentation changes only. No Terraform apply, Azure RBAC, GitHub Secrets mutations or site implementation until separately approved. No RPG UI, images or frontend framework yet.
+
+> Git policy: direct commits to `main` by PO instruction (2026-10-20); no mandatory PR.
